@@ -1,0 +1,86 @@
+version: "3.0"
+stories:
+  - story: thanks
+    steps:
+    - intent: thank
+    - action: utter_anything_else
+
+  - story: story_1_search_treat_simple
+    steps:
+    - intent: search_treat
+    - action: utter_anything_else
+    - intent: bye
+    - action: utter_goodbye
+
+  - story: story_2_search_food_simple
+    steps:
+    - intent: search_food
+    - action: action_search_food
+    - intent: bye
+    - action: utter_goodbye
+
+
+  - story: story_3_search_symptom_simple
+    steps:
+    - intent: search_symptom
+    - action: action_search_symptom
+    - intent: bye
+    - action: utter_goodbye
+
+  - story: story_5_search_neopathy_simple
+    steps:
+    - intent: search_neopathy
+    - action: action_search_neopathy
+    - intent: bye
+    - action: utter_goodbye
+
+
+  - story: story_6_search_drug_simple
+    steps:
+    - intent: search_drug
+    - action: action_search_drug
+    - intent: bye
+    - action: utter_goodbye
+
+  - story: story_7_search_prevention_simple
+    steps:
+    - intent: search_prevention
+    - action: action_search_prevention
+    - intent: bye
+    - action: utter_goodbye
+
+  - story: story_8_search_drug_func_simple
+    steps:
+    - intent: search_drug_func
+    - action: action_search_drug_func
+    - intent: bye
+    - action: utter_goodbye
+
+  - story: story_9_search_disease_treat_time_simple
+    steps:
+    - intent: search_disease_treat_time
+    - action: action_search_disease_treat_time
+    - intent: bye
+    - action: utter_goodbye
+
+  - story: story_10_search_easy_get_simple
+    steps:
+    - intent: search_easy_get
+    - action: action_search_easy_get
+    - intent: bye
+    - action: utter_goodbye
+
+
+  - story: story_11_search_disease_dept_simple
+    steps:
+    - intent: search_disease_dept
+    - action: action_search_disease_dept
+    - intent: bye
+    - action: utter_goodbye
+
+
+
+
+
+
+

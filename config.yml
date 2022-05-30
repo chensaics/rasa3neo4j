@@ -1,0 +1,142 @@
+# all configuration
+# https://rasa.com/docs/rasa/model-configuration/   # https://rasa.com/docs/rasa/nlu/components/
+recipe: default.v1
+language: zh
+
+
+pipeline:
+# See https://rasa.com/docs/rasa/tuning-your-model for more information.
+
+# ###########################################
+# SpacyNLP相关配置 # 预训练词向量、文本分词器
+# ###########################################
+  - name: "SpacyNLP"
+    model: "zh_core_web_md"
+  - name: SpacyTokenizer
+     # 正则表达式 pattern detect tokens
+    "token_pattern": None
+#    # Flag to check whether to split intents
+#    "intent_tokenization_flag": False
+#    # Symbol on which intent should be split
+#    "intent_split_symbol": "_"
+
+# 结巴分词，不和 Spacy Tokenizer 同时使用
+#  - name: JiebaTokenizer   #中文分词
+# # 自定义用户词典，包含自定义词汇
+#  dictionary_path: "data/jieba_userdict"
+# ##########################################
+# Entity Extractor 实体抽取器 同义词映射
+# #########################################
+  - name: SpacyEntityExtractor
+    # dimensions to extract
+#    dimensions: ["YEAR", "MONTH", "PROVINCE"]
+  - name: RegexEntityExtractor
+    "use_lookup_tables": True
+    "use_regexes": True
+    # word boundaries TRUE会加载\\b ，中文的这里设置FALSE
+    "use_word_boundaries": False
+#  - name: CRFEntityExtractor
+  #  支持 同义词映射 做实体识别
+  - name: EntitySynonymMapper
+
+
+# ##########################################
+# Featurizer 和classifier相关配置
+# ##########################################
+# 创建用户信息和标签(意图和响应)的词袋表征 为意图分类和 response selection创建特征
+  - name: CountVectorsFeaturizer
+    analyzer: "word"
+    min_ngram: 1
+    max_ngram: 1
+
+  - name: RegexFeaturizer
+    # Text will be processed with case sensitive as default
+    "case_sensitive": False
+    # use match word boundaries for lookup table
+    # word boundaries TRUE会加载\\b ，中文的这里设置FALSE
+    "use_word_boundaries": False
+
+  ## 特征提取器 将一句话变成一个向量
+  - name: "SpacyFeaturizer"
+    pooling: mean
+
+# 预训练模型词向量化
+#  - name: LanguageModelFeaturizer
+#    # Name of the language model to use
+#    model_name: "bert"
+#    # Pre-Trained weights to be loaded
+#    model_weights: "rasa/LaBSE"
+#    # An optional path to a specific directory to download and cache the pre-trained model weights.
+#    # The `default` cache_dir is the same as https://huggingface.co/transformers/serialization.html#cache-directory .
+#    cache_dir: null
+
+# ##########################################
+# Classifier 相关配置
+# ##########################################
+  - name: DIETClassifier
+    epochs: 3
+    entity_recognition: True
+    constrain_similarities: True
+
+  - name: FallbackClassifier
+    threshold: 0.3
+    ambiguity_threshold: 0.1
+
+#  - name: "SklearnIntentClassifier"
+#    # Specifies the list of regularization values to
+#    # cross-validate over for C-SVM.
+#    # This is used with the ``kernel`` hyperparameter in GridSearchCV.
+#    C: [ 1, 2, 5, 10, 20, 100 ]
+#    # Specifies the kernel to use with C-SVM.
+#    # This is used with the ``C`` hyperparameter in GridSearchCV.
+#    kernels: [ "linear" ]
+#    # Gamma parameter of the C-SVM.
+#    "gamma": [ 0.1 ]
+#    # We try to find a good number of cross folds to use during
+#    # intent training, this specifies the max number of folds.
+#    "max_cross_validation_folds": 5
+#    # Scoring function used for evaluating the hyper parameters.
+#    # This can be a name or a function.
+#    "scoring_function": "f1_weighted"
+
+
+# ############################
+# Response Selector相关配置
+# ############################
+#- name: ResponseSelector
+#  retrieval_intent: 'um'
+#  scale_loss: false
+#  epochs: 25  # Spacy   轮   %
+#- name: ResponseSelector
+#  retrieval_intent: 'visa'
+#  scale_loss: false
+#  epochs: 10  # Spacy  10轮  99.8%  20轮57:08min
+#- name: ResponseSelector
+#  retrieval_intent: 'malaysia'
+#  scale_loss: false
+#  epochs: 10  # Spacy  10轮  99.8%  20轮57:08min
+#- name: ResponseSelector
+#  retrieval_intent: 'chitchat'
+#  scale_loss: false
+#  epochs: 10  #
+
+
+# ##################
+# policies 相关配置
+# ##################
+policies:
+# Configuration for Rasa Core.
+# https://rasa.com/docs/rasa/core/policies/
+# # No configuration for policies was provided. The following default policies were used to train your model.
+# # If you'd like to customize them, uncomment and adjust the policies.
+# # See https://rasa.com/docs/rasa/policies for more information.
+  - name: RulePolicy
+    # 如果预测的所有action的confidence score都低于这个threshold，就触发 core_fallback_action_name
+    core_fallback_threshold: 0.3
+    core_fallback_action_name: "action_fallbacks"
+    enable_fallback_prediction: True
+  - name: TEDPolicy
+    constrain_similarities: true
+    epochs: 40
+
+
