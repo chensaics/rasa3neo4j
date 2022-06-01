@@ -8,6 +8,7 @@ from py2neo import Graph
 p = 'data/medical/lookup/Diseases.txt'
 
 disease_names = [i.strip() for i in open(p, 'r', encoding='UTF-8').readlines()]
+# 改为自己数据库的用户名和密码
 graph = Graph(uri="bolt://localhost:7687", user="neo4j", password="rasaneo4j")
 
 

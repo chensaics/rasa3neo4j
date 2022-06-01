@@ -1,5 +1,12 @@
 from ruamel import yaml
 import pandas as pd
+import os
+
+
+def convert_data(currentPath):
+    if not os.path.exists(currentPath):
+        return
+    return
 
 
 if __name__ == '__main__':
